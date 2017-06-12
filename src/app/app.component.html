@@ -1,43 +1,23 @@
-<form (ngSubmit)="onSubmit()"
-      [formGroup]="form"
-      novalidate>
+<div class="form-group">
+  <input
+    type="text"
+    class="form-control"
+    [formControl]="commit"
+    [appTypeahead]="typeahead"
+    [displayWith]="displayFn">
 
-  <div class="form-group">
-    <input
-           type="text"
-           placeholder="search"
-           formControlName="commit"
-           class="form-control"
-           [appTypeahead]="test"
-           [displayWith]="displayFn">
+  <app-typeahead #typeahead>
+    <app-typeahead-option *ngFor="let commit of (filteredOptions | async)" [value]="commit">
+      <span class="message">{{commit.commit.message}}</span>
+      <span class="sha">{{shortSha(commit.sha)}}</span>
+    </app-typeahead-option>
+  </app-typeahead>
+</div>
 
-    <app-typeahead #test>
-      <app-typeahead-option *ngFor="let commit of (filteredOptions | async)" [value]="commit.commit">
-        <span class="message">{{commit.commit.message}}</span>
-        <span class="sha">{{commit.sha}}</span>
-      </app-typeahead-option>
-    </app-typeahead>
-  </div>
-</form>
+<pre [class.valid]="commit.valid" class="form-value">
+{{!commit.valid ? 'No commit selected! Select something using the form field above ^^':''}}
 
-<pre [class.valid]="form.valid" class="form-value">
-Form is {{form.valid ? 'VALID' : 'INVALID! Type something in the box above to select a commit'}}
-
-{{form.value|json}}</pre>
-
-
-<!--<pre>{{formMd.value | json}}-->
-<!--valid: {{formMd.valid}}</pre>-->
-<!--<form (ngSubmit)="onSubmit()"-->
-      <!--[formGroup]="formMd"-->
-      <!--novalidate>-->
-
-  <!--<div class="form-group">-->
-    <!--<input type="text" mdInput formControlName="commit" class="form-control" [mdAutocomplete]="auto">-->
-  <!--</div>-->
-
-  <!--<md-autocomplete #auto="mdAutocomplete" [displayWith]="displayFn">-->
-    <!--<md-option *ngFor="let commit of (filteredOptionsMd | async)" [value]="commit.commit">-->
-    <!--</md-option>-->
-  <!--</md-autocomplete>-->
-<!--</form>-->
+sha: {{commit.value?.sha}}
+author.name: {{commit.value?.commit?.author.name}}
+author.date: {{commit.value?.commit?.author.date}}
+message: {{commit.value?.commit?.message}}</pre>

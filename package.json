@@ -5,7 +5,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --poll=2000",
-    "build": "ng build --prod --aot --output-path docs --sourcemap",
+    "build": "ng build --prod --aot --output-path docs --base-href /angular-typeahead-stuff/",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"

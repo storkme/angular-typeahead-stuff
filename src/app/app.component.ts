@@ -9,59 +9,46 @@ import 'rxjs/add/operator/publishReplay';
 import 'rxjs/add/operator/startWith';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/observable/combineLatest';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormControl } from '@angular/forms';
+import { Http } from '@angular/http';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  form: FormGroup;
   options: Observable<GithubCommit[]>;
   filteredOptions: Observable<GithubCommit[]>;
-  // formMd: FormGroup;
-  // filteredOptionsMd: Observable<GithubCommit[]>;
+  commit: FormControl;
 
-  constructor(private service: GithubApiService,
-              private fb: FormBuilder) {
+  constructor(private http: Http) {
   }
 
   ngOnInit(): void {
-    this.form = this.fb.group({
-      commit: ['', Validators.required],
-    });
+    this.commit = new FormControl();
 
-     this.options = this.service.commits('storkme', 'angular-typeahead-stuff')
+    this.options = this.http.get(`https://api.github.com/repos/storkme/angular-typeahead-stuff/commits`)
+      .map((response) => response.json())
       .share();
 
     this.filteredOptions = Observable.combineLatest(
-      this.form.controls.commit.valueChanges.startWith(null),
+      this.commit.valueChanges.startWith(null),
       this.options
     )
       .map(([val, options]) => val ? this.filter(val, options) : options.slice());
-
-    // this.formMd = this.fb.group({
-    //   commit: ['', Validators.required]
-    // });
-
-    // this.filteredOptionsMd = Observable.combineLatest(
-    //   this.formMd.controls.commit.valueChanges.startWith(null),
-    //   this.options
-    // )
-    //   .map(([val, options]) => val ? this.filter(val, options) : options.slice());
-  }
-
-  onSubmit() {
-    console.log(this.form.value);
   }
 
   displayFn(o) {
-    return o && o.message;
+    return o && o.commit.message;
   }
 
   private filter(value: string, options) {
     return options.filter(
       (option) => option.commit.message.includes(value)
     );
+  }
+
+  shortSha(sha: string) {
+    return sha.substring(0, 8);
   }
 }

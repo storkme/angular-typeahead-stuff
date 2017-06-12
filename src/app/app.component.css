@@ -1,13 +1,14 @@
 input {
   width: 90%;
-  margin: 20px;
-  font-size: 2em;
 }
 
 .form-value {
   background-color: darkred;
   color: white;
   transition: all 0.1s ease-in-out;
+  overflow-x: auto;
+  padding: 5px;
+  border-radius: 2px;
 }
 
 .form-value.valid {

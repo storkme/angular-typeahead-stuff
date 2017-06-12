@@ -12,13 +12,12 @@ import { TypeaheadComponent } from './typeahead.component';
   styles: [`
     :host {
       cursor: pointer;
-      min-height: 48px;
+      min-height: 42px;
       display: flex;
       width: 100%;
       align-items: center;
       border-bottom: 1px solid white;
       transition: all 0.1s ease-in-out;
-      font-size: 24px;
       padding: 0 5px;
     }
 
