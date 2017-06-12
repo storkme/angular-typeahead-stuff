@@ -2,22 +2,31 @@
   <input
     type="text"
     class="form-control"
-    [formControl]="commit"
+    placeholder="Country"
+    [formControl]="country"
     [appTypeahead]="typeahead"
     [displayWith]="displayFn">
 
   <app-typeahead #typeahead>
-    <app-typeahead-option *ngFor="let commit of (filteredOptions | async)" [value]="commit">
-      <span class="message">{{commit.commit.message}}</span>
-      <span class="sha">{{shortSha(commit.sha)}}</span>
+    <app-typeahead-option *ngFor="let country of (filteredCountries$ | async)" [value]="country" class="country">
+      <img class="country-flag" [src]="country.flag">
+      <span class="country-name">{{country.name}}</span>
+      <span class="country-summary"><ng-container *ngFor="let alt of country.altSpellings; let last = last;">{{alt}}{{!last ? ', ' : ''}}</ng-container></span>
     </app-typeahead-option>
   </app-typeahead>
 </div>
 
-<pre [class.valid]="commit.valid" class="form-value">
-{{!commit.valid ? 'No commit selected! Select something using the form field above ^^':''}}
+<div class="row">
+  <div class="col-5">
+    <img *ngIf="country.value" class="country-flag" [src]="country.value?.flag">
+  </div>
+  <div class="col">
+    <dl>
+      <dt>Country</dt>
+      <dd>{{country.value?.name || '-'}}</dd>
+      <dt>Alt. spellings</dt>
+      <dd *ngFor="let spelling of country.value?.altSpellings">{{spelling}}</dd>
+    </dl>
+  </div>
+</div>
 
-sha: {{commit.value?.sha}}
-author.name: {{commit.value?.commit?.author.name}}
-author.date: {{commit.value?.commit?.author.date}}
-message: {{commit.value?.commit?.message}}</pre>

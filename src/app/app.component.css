@@ -15,9 +15,18 @@ input {
   background-color: darkgreen;
 }
 
-.sha {
-  justify-self: end;
+app-typeahead-option .country-flag {
+  max-width: 24px;
+  margin: 0 10px 0 0;
+}
+
+.country-flag {
+  width: 100%;
+  height: auto;
+}
+
+.country-summary {
   margin-left: auto;
-  font-size: 0.8em;
-  opacity: 0.9;
+  opacity: 0.8;
+  font-size: 0.85em;
 }

@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { GithubCommit } from './lib/commit';
-import { GithubApiService } from './shared/github-api.service';
 import 'rxjs/add/operator/share';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/first';
@@ -17,38 +15,34 @@ import { Http } from '@angular/http';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
-  options: Observable<GithubCommit[]>;
-  filteredOptions: Observable<GithubCommit[]>;
-  commit: FormControl;
+  countries$: Observable<any[]>;
+  filteredCountries$: Observable<any[]>;
+  country: FormControl;
 
   constructor(private http: Http) {
   }
 
   ngOnInit(): void {
-    this.commit = new FormControl();
+    this.country = new FormControl();
 
-    this.options = this.http.get(`https://api.github.com/repos/storkme/angular-typeahead-stuff/commits`)
+    this.countries$ = this.http.get(`assets/countries.json`)
       .map((response) => response.json())
       .share();
 
-    this.filteredOptions = Observable.combineLatest(
-      this.commit.valueChanges.startWith(null),
-      this.options
+    this.filteredCountries$ = Observable.combineLatest(
+      this.country.valueChanges.startWith(null),
+      this.countries$
     )
       .map(([val, options]) => val ? this.filter(val, options) : options.slice());
   }
 
   displayFn(o) {
-    return o && o.commit.message;
+    return o && o.name;
   }
 
   private filter(value: string, options) {
     return options.filter(
-      (option) => option.commit.message.includes(value)
+      (option) => option.name.toLowerCase().includes(value)
     );
-  }
-
-  shortSha(sha: string) {
-    return sha.substring(0, 8);
   }
 }

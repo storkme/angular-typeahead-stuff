@@ -7,7 +7,6 @@ import { TypeaheadComponent } from './components/typeahead.component';
 import { TypeaheadInputDirective } from './components/typeahead-input.directive';
 import { TypeaheadOptionComponent } from './components/typeahead-option.component';
 import { HttpModule } from '@angular/http';
-import { GithubApiService } from './shared/github-api.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
@@ -23,7 +22,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     ReactiveFormsModule,
     HttpModule
   ],
-  providers: [GithubApiService],
+  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule {
