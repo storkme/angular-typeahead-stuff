@@ -31,7 +31,7 @@ export class AppComponent implements OnInit {
       commit: ['', Validators.required],
     });
 
-    this.options = this.service.commits('storkme', 'lightshow-web')
+     this.options = this.service.commits('storkme', 'angular-typeahead-stuff')
       .share();
 
     this.filteredOptions = Observable.combineLatest(
