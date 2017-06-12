@@ -55,7 +55,7 @@ export class TypeaheadInputDirective implements ControlValueAccessor, Validator 
 
 
   @HostListener('input', ['$event'])
-  private onInput(event1) {
+  private onInput(event) {
     this.typeahead.reset();
     this._onChange((event.target as HTMLInputElement).value);
     this.openPanel();
