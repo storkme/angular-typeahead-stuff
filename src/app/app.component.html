@@ -18,7 +18,7 @@
 
 <div class="row">
   <div class="col-5">
-    <img *ngIf="country.value" class="country-flag" [src]="country.value?.flag">
+    <img *ngIf="country.value?.flag" class="country-flag" [src]="country.value?.flag">
   </div>
   <div class="col">
     <dl>

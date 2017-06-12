@@ -41,8 +41,9 @@ export class AppComponent implements OnInit {
   }
 
   private filter(value: string, options) {
+    const v = value.toString().toLowerCase();
     return options.filter(
-      (option) => option.name.toLowerCase().includes(value)
+      (option) => option.name.toLowerCase().indexOf(v) !== -1
     );
   }
 }

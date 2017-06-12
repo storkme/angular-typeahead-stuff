@@ -57,7 +57,7 @@
 
 
       <h2>Component code [<a href="https://github.com/storkme/angular-typeahead-stuff/blob/master/src/app/app.component.ts">app.component.ts</a>]</h2>
-  <pre class="js"><span class="s0">
+  <pre><span class="s0">
 
   ngOnInit(): </span><span class="s1">void </span><span class="s0">{
     </span><span class="s1">this</span><span class="s0">.country = </span><span class="s1">new </span><span class="s0">FormControl()</span><span class="s2">;</span><span class="s0">
@@ -78,8 +78,9 @@
   }
 
   </span><span class="s1">private </span><span class="s0">filter(value: string</span><span class="s2">, </span><span class="s0">options) {
+    </span><span class="s1">const </span><span class="s0">v = value.toString().toLowerCase()</span><span class="s2">;</span><span class="s0">
     </span><span class="s1">return </span><span class="s0">options.filter(
-      (option) =&gt; option.name.toLowerCase().includes(value)
+      (option) =&gt; option.name.toLowerCase().indexOf(v) !== -</span><span class="s4">1</span><span class="s0">
     )</span><span class="s2">;</span><span class="s0">
   }</span></pre>
 
