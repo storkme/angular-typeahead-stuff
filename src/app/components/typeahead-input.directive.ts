@@ -88,14 +88,17 @@ export class TypeaheadInputDirective implements ControlValueAccessor, Validator 
 
   @HostListener('window:scroll')
   private onScroll() {
-    if (this.typeahead.showPanel) {
-      this.typeahead.setPosition(this.element.nativeElement.getBoundingClientRect());
-    }
+    this.setPosition();
+  }
+
+  @HostListener('window:resize')
+  private onResize() {
+    this.setPosition();
   }
 
   private openPanel() {
-    this.typeahead.setPosition(this.element.nativeElement.getBoundingClientRect());
     this.typeahead.showPanel = true;
+    this.setPosition();
 
     this.typeahead.options.changes
       .startWith(this.typeahead.optionArray)
@@ -133,6 +136,12 @@ export class TypeaheadInputDirective implements ControlValueAccessor, Validator 
 
   validate(c: AbstractControl): ValidationErrors | any {
     return this.typeahead.selectedOption ? null : {noneSelected: {valid: false}};
+  }
+
+  private setPosition() {
+    if (this.typeahead.showPanel) {
+      this.typeahead.setPosition(this.element.nativeElement.getBoundingClientRect());
+    }
   }
 
   private setValueAndClose(selected: TypeaheadOptionComponent) {
