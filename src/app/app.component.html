@@ -1,23 +1,6 @@
 <form (ngSubmit)="onSubmit()"
       [formGroup]="form"
       novalidate>
-  <div class="form-group">
-    <div class="col-xs-4"><p>load from</p></div>
-    <div class="col-xs-4">
-      <div class="form-group">
-        <input type="text"
-          placeholder="owner"
-          formControlName="owner"
-          class="form-control">
-      </div>
-    </div>
-    <div class="col-xs-4"><div class="form-group">
-      <input type="text"
-             placeholder="owner"
-             formControlName="repo"
-             class="form-control">
-    </div></div>
-  </div>
 
   <div class="form-group">
     <input
@@ -30,14 +13,15 @@
 
     <app-typeahead #test>
       <app-typeahead-option *ngFor="let commit of (filteredOptions | async)" [value]="commit.commit">
-        {{commit.commit.message}}<br>
+        <span class="message">{{commit.commit.message}}</span>
+        <span class="sha">{{commit.sha}}</span>
       </app-typeahead-option>
     </app-typeahead>
   </div>
 </form>
 
 <pre [class.valid]="form.valid" class="form-value">
-form is {{form.valid ? 'VALID' : 'INVALID!'}}
+Form is {{form.valid ? 'VALID' : 'INVALID! Type something in the box above to select a commit'}}
 
 {{form.value|json}}</pre>
 

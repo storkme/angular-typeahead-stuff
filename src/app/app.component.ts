@@ -10,10 +10,6 @@ import 'rxjs/add/operator/startWith';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/observable/combineLatest';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-
-const INITIAL_REPO = 'angular-typeahead-stuff';
-const INITIAL_OWNER = 'storkme';
-
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -33,18 +29,9 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     this.form = this.fb.group({
       commit: ['', Validators.required],
-      owner: [INITIAL_OWNER, Validators.required],
-      repo: [INITIAL_REPO, Validators.required],
     });
 
-    this.options = Observable.combineLatest(
-      this.form.controls.owner.valueChanges
-        .startWith(INITIAL_OWNER),
-      this.form.controls.repo.valueChanges
-        .startWith(INITIAL_REPO)
-    )
-      .debounceTime(500)
-      .switchMap(([owner, repo]) => this.service.commits('storkme', 'lightshow-web'))
+    this.options = this.service.commits('storkme', 'lightshow-web')
       .share();
 
     this.filteredOptions = Observable.combineLatest(

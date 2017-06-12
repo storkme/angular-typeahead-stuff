@@ -74,8 +74,6 @@ export class TypeaheadOptionComponent {
 
   @HostListener('mousedown', ['$event']) onClick(event: MouseEvent) {
     if (event.button === 0) {
-
-      console.log('selecting...');
       this.select();
     }
   }

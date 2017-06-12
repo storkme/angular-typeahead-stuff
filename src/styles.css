@@ -2,11 +2,11 @@
 @import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
 
 .app-typeahead-option.app-selected {
-  background-color: darkred !important;
+  background-color: darkblue !important;
 }
 
 .app-typeahead-option:hover {
-  background-color: orange !important;
+  background-color: lightblue !important;
 }
 
 pre {

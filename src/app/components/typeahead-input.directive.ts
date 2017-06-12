@@ -104,7 +104,6 @@ export class TypeaheadInputDirective implements ControlValueAccessor, Validator 
       .first()
       .subscribe(
         (selectedElement: any) => {
-          console.log('hi, setting value and closing', selectedElement);
           this.setValueAndClose(selectedElement);
         }
       );
@@ -128,13 +127,11 @@ export class TypeaheadInputDirective implements ControlValueAccessor, Validator 
   }
 
   setDisabledState(isDisabled: boolean): void {
-    // ????
-    console.log('setDisabledState not implemented!!');
+    // TODO figure out what to do here
     throw new Error('Method not implemented.');
   }
 
   validate(c: AbstractControl): ValidationErrors | any {
-    console.log('am i valid?', !!this.typeahead.selectedOption);
     return this.typeahead.selectedOption ? null : {noneSelected: {valid: false}};
   }
 
