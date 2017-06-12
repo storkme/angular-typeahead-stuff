@@ -8,13 +8,15 @@ import { TypeaheadInputDirective } from './components/typeahead-input.directive'
 import { TypeaheadOptionComponent } from './components/typeahead-option.component';
 import { HttpModule } from '@angular/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { TestAsyncErrorComponent } from './components/test-async-error.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     TypeaheadComponent,
     TypeaheadInputDirective,
-    TypeaheadOptionComponent
+    TypeaheadOptionComponent,
+    TestAsyncErrorComponent
   ],
   imports: [
     BrowserModule,
