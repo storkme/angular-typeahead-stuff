@@ -9,7 +9,6 @@ import { TypeaheadOptionComponent } from './components/typeahead-option.componen
 import { HttpModule } from '@angular/http';
 import { GithubApiService } from './shared/github-api.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MdAutocompleteModule } from '@angular/material';
 
 @NgModule({
   declarations: [
@@ -22,7 +21,6 @@ import { MdAutocompleteModule } from '@angular/material';
     BrowserModule,
     BrowserAnimationsModule,
     ReactiveFormsModule,
-    MdAutocompleteModule,
     HttpModule
   ],
   providers: [GithubApiService],
