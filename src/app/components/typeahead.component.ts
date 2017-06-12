@@ -1,5 +1,8 @@
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { AfterViewInit, Component, ContentChildren, ElementRef, OnInit, QueryList, ViewChild } from '@angular/core';
+import {
+  AfterViewInit, Component, ContentChildren, ElementRef, Input, OnInit, QueryList,
+  ViewChild
+} from '@angular/core';
 import { some, take } from 'lodash';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/map';

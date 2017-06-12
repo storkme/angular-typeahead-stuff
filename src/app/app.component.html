@@ -1,18 +1,21 @@
-<pre>{{form.value | json}}</pre>
+<pre>{{form.value | json}}
+valid: {{form.valid}}</pre>
 
 
 <form (ngSubmit)="onSubmit()"
       [formGroup]="form"
       novalidate>
   <div class="form-group">
-    <input [appTypeahead]="test"
+    <input
            type="text"
            placeholder="search"
            formControlName="commit"
-           class="form-control">
+           class="form-control"
+           [appTypeahead]="test"
+           [displayWith]="displayFn">
 
     <app-typeahead #test>
-      <app-typeahead-option *ngFor="let commit of (filteredOptions | async)" [value]="commit.commit.message">
+      <app-typeahead-option *ngFor="let commit of (filteredOptions | async)" [value]="commit">
         {{commit.commit.message}}<br>
       </app-typeahead-option>
     </app-typeahead>
@@ -22,9 +25,8 @@
 </form>
 
 
-
-
-<pre>{{formMd.value | json}}</pre>
+<pre>{{formMd.value | json}}
+valid: {{formMd.valid}}</pre>
 <form (ngSubmit)="onSubmit()"
       [formGroup]="formMd"
       novalidate>
@@ -33,8 +35,8 @@
     <input type="text" mdInput formControlName="commit" class="form-control" [mdAutocomplete]="auto">
   </div>
 
-  <md-autocomplete #auto="mdAutocomplete">
-    <md-option *ngFor="let commit of (filteredOptionsMd | async)" [value]="commit.commit.message">
+  <md-autocomplete #auto="mdAutocomplete" [displayWith]="displayFn">
+    <md-option *ngFor="let commit of (filteredOptionsMd | async)" [value]="commit">
       {{ commit.commit.message}}
     </md-option>
   </md-autocomplete>

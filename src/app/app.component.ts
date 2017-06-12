@@ -27,14 +27,14 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.form = this.fb.group({
-      commit: ['', Validators.required]
+      commit: ['', Validators.required, lol]
     });
 
     this.formMd = this.fb.group({
-      commit: ['', Validators.required]
+      commit: ['', Validators.required, lol]
     });
 
-    this.options = this.service.commits('storkme', 'lightshow-api')
+    this.options = this.service.commits('storkme', 'lightshow-web')
       .first()
       .publishReplay()
       .refCount();
@@ -56,9 +56,18 @@ export class AppComponent implements OnInit {
     console.log(this.form.value);
   }
 
+  displayFn(o) {
+    return o && o.commit.message;
+  }
+
   private filter(value: string, options) {
     return options.filter(
       (option) => option.commit.message.includes(value)
     );
   }
+}
+
+function lol(f) {
+  console.log(f.value);
+  return Promise.resolve(typeof f.value === 'object' ? null : {nomatch: {valid: false}});
 }
