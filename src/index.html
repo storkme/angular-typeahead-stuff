@@ -11,12 +11,20 @@
   <link href="https://fonts.googleapis.com/css?family=Anonymous+Pro|Overpass" rel="stylesheet">
   <style>
     pre {    background-color: rgb(43, 43, 43);}
-    .ln { color: #606366; font-weight: normal; font-style: normal; }
-    .s0 { color: rgb(169,183,198); }
-    .s1 { color: rgb(232,191,106); }
-    .s2 { color: rgb(186,186,186); }
-    .s3 { color: rgb(165,194,97); }
-    .s4 { color: rgb(128,128,128); }
+
+    .html .ln { color: #606366; font-weight: normal; font-style: normal; }
+    .html .s0 { color: rgb(169,183,198); }
+    .html .s1 { color: rgb(232,191,106); }
+    .html .s2 { color: rgb(186,186,186); }
+    .html .s3 { color: rgb(165,194,97); }
+
+
+    .js .ln { color: #606366; font-weight: normal; font-style: normal; }
+    .js .s0 { color: rgb(169,183,198); }
+    .js .s1 { color: rgb(204,120,50); font-weight: bold; }
+    .js .s2 { color: rgb(204,120,50); }
+    .js .s3 { color: rgb(106,135,89); }
+
   </style>
 </head>
 <body>
@@ -28,36 +36,55 @@
   <app-root></app-root>
   </div>
 
-      <h2>angular template codez</h2>
-<pre><span class="s1">&lt;input
+  <h2>Template code [<a href="https://github.com/storkme/angular-typeahead-stuff/blob/master/src/app/app.component.html">app.component.html</a>]</h2>
+  <pre class="html"><span class="s0">
+  </span><span class="s1">&lt;input
     </span><span class="s2">type=</span><span class="s3">"text"</span><span class="s1">
     </span><span class="s2">class=</span><span class="s3">"form-control"</span><span class="s1">
-    </span><span class="s2">[formControl]=</span><span class="s3">"commit"</span><span class="s1">
+    </span><span class="s2">placeholder=</span><span class="s3">"Country"</span><span class="s1">
+    </span><span class="s2">[formControl]=</span><span class="s3">"country"</span><span class="s1">
     </span><span class="s2">[appTypeahead]=</span><span class="s3">"typeahead"</span><span class="s1">
     </span><span class="s2">[displayWith]=</span><span class="s3">"displayFn"</span><span class="s1">&gt;</span><span class="s0">
 
   </span><span class="s1">&lt;app-typeahead </span><span class="s2">#typeahead</span><span class="s1">&gt;</span><span class="s0">
-    </span><span class="s1">&lt;app-typeahead-option </span><span class="s2">*ngFor=</span><span class="s3">"let commit of (filteredOptions | async)" </span><span class="s2">[value]=</span><span class="s3">"commit.commit"</span><span class="s1">&gt;</span><span class="s0">
-      </span><span class="s1">&lt;span </span><span class="s2">class=</span><span class="s3">"message"</span><span class="s1">&gt;</span><span class="s0">{{commit.commit.message}}</span><span class="s1">&lt;/span&gt;</span><span class="s0">
-      </span><span class="s1">&lt;span </span><span class="s2">class=</span><span class="s3">"sha"</span><span class="s1">&gt;</span><span class="s0">{{shortSha(commit.sha)}}</span><span class="s1">&lt;/span&gt;</span><span class="s0">
+    </span><span class="s1">&lt;app-typeahead-option </span><span class="s2">*ngFor=</span><span class="s3">"let country of (filteredCountries$ | async)" </span><span class="s2">[value]=</span><span class="s3">"country" </span><span class="s2">class=</span><span class="s3">"country"</span><span class="s1">&gt;</span><span class="s0">
+      </span><span class="s1">&lt;img </span><span class="s2">class=</span><span class="s3">"country-flag" </span><span class="s2">[src]=</span><span class="s3">"country.flag"</span><span class="s1">&gt;</span><span class="s0">
+      </span><span class="s1">&lt;span </span><span class="s2">class=</span><span class="s3">"country-name"</span><span class="s1">&gt;</span><span class="s0">{{country.name}}</span><span class="s1">&lt;/span&gt;</span><span class="s0">
+      </span><span class="s1">&lt;span </span><span class="s2">class=</span><span class="s3">"country-summary"</span><span class="s1">&gt;&lt;ng-container </span><span class="s2">*ngFor=</span><span class="s3">"let alt of country.altSpellings; let last = last;"</span><span class="s1">&gt;</span><span class="s0">{{alt}}{{!last ? ', ' : ''}}</span><span class="s1">&lt;/ng-container&gt;&lt;/span&gt;</span><span class="s0">
     </span><span class="s1">&lt;/app-typeahead-option&gt;</span><span class="s0">
   </span><span class="s1">&lt;/app-typeahead&gt;</span></pre>
-      <h2>js codez</h2>
-      <pre><span class="s0">  ngOnInit(): </span><span class="s1">void </span><span class="s0">{
-    </span><span class="s1">this</span><span class="s0">.commit = </span><span class="s1">new </span><span class="s0">FormControl()</span><span class="s2">;</span><span class="s0">
 
-    </span><span class="s1">this</span><span class="s0">.options = </span><span class="s1">this</span><span class="s0">.http.get(</span><span class="s3">`https://api.github.com/repos/storkme/angular-typeahead-stuff/commits`</span><span class="s0">)
+
+
+      <h2>Component code [<a href="https://github.com/storkme/angular-typeahead-stuff/blob/master/src/app/app.component.ts">app.component.ts</a>]</h2>
+  <pre class="js"><span class="s0">
+
+  ngOnInit(): </span><span class="s1">void </span><span class="s0">{
+    </span><span class="s1">this</span><span class="s0">.country = </span><span class="s1">new </span><span class="s0">FormControl()</span><span class="s2">;</span><span class="s0">
+
+    </span><span class="s1">this</span><span class="s0">.countries$ = </span><span class="s1">this</span><span class="s0">.http.get(</span><span class="s3">`assets/countries.json`</span><span class="s0">)
       .map((response) =&gt; response.json())
       .share()</span><span class="s2">;</span><span class="s0">
 
-    </span><span class="s1">this</span><span class="s0">.filteredOptions = Observable.combineLatest(
-      </span><span class="s1">this</span><span class="s0">.commit.valueChanges.startWith(</span><span class="s1">null</span><span class="s0">)</span><span class="s2">,</span><span class="s0">
-      </span><span class="s1">this</span><span class="s0">.options
+    </span><span class="s1">this</span><span class="s0">.filteredCountries$ = Observable.combineLatest(
+      </span><span class="s1">this</span><span class="s0">.country.valueChanges.startWith(</span><span class="s1">null</span><span class="s0">)</span><span class="s2">,</span><span class="s0">
+      </span><span class="s1">this</span><span class="s0">.countries$
     )
       .map(([val</span><span class="s2">, </span><span class="s0">options]) =&gt; val ? </span><span class="s1">this</span><span class="s0">.filter(val</span><span class="s2">, </span><span class="s0">options) : options.slice())</span><span class="s2">;</span><span class="s0">
+  }
+
+  displayFn(o) {
+    </span><span class="s1">return </span><span class="s0">o &amp;&amp; o.name</span><span class="s2">;</span><span class="s0">
+  }
+
+  </span><span class="s1">private </span><span class="s0">filter(value: string</span><span class="s2">, </span><span class="s0">options) {
+    </span><span class="s1">return </span><span class="s0">options.filter(
+      (option) =&gt; option.name.toLowerCase().includes(value)
+    )</span><span class="s2">;</span><span class="s0">
   }</span></pre>
 
 </div>
 
 </body>
+<a href="https://github.com/storkme/angular-typeahead-stuff/"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
 </html>
