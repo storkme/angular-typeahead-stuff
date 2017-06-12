@@ -19,10 +19,11 @@ import { Observable } from 'rxjs/Observable';
     .app-typeahead-panel {
       position: fixed;
       z-index: 5;
-      background: #d8d8d8;
-      border: 1px solid grey;
+      background: #f8f8f8;
+      border: 1px solid c8c8c8;
       max-height: 300px;
-      overflow-y: scroll;
+      overflow-y: auto;
+      overflow-x: hidden;
     }`],
   animations: [
     trigger('panelState', [
@@ -50,22 +51,39 @@ export class TypeaheadComponent implements AfterViewInit {
   constructor() {
   }
 
-  public selectNext() {
+  public selectNext(i = 1) {
     this.setCurrentItem(false);
-    this.selectedOptionIndex = Math.min(this.selectedOptionIndex + 1, this.optionArray.length - 1);
+    this.selectedOptionIndex = Math.min(Math.max(this.selectedOptionIndex + i, 0), this.optionArray.length - 1);
     this.setCurrentItem(true);
   }
 
-  public selectPrev() {
+  public reset() {
     this.setCurrentItem(false);
-    this.selectedOptionIndex = Math.max(this.selectedOptionIndex - 1, 0);
-    this.setCurrentItem(true);
+    this.selectedOption = null;
+    this.selectedOptionIndex = -1;
   }
 
   setCurrentItem(selected: boolean) {
     if (this.optionArray && this.optionArray[this.selectedOptionIndex]) {
       this.selectedOption = this.optionArray[this.selectedOptionIndex];
       this.selectedOption.selected = selected;
+      if (selected) {
+        const windowTop = this.panel.nativeElement.scrollTop;
+        const windowBottom = windowTop + this.panel.nativeElement.getBoundingClientRect().height;
+        const elementTop = this.selectedOption.offsetTop;
+        const elementBottom = elementTop + this.selectedOption.elementHeight;
+        let scroll = 0;
+
+        if (elementTop < windowTop) {
+          scroll = elementTop - windowTop;
+        } else if (elementBottom > windowBottom) {
+          scroll = elementBottom - windowBottom;
+        }
+
+        if (scroll) {
+          this.panel.nativeElement.scrollTop = this.panel.nativeElement.scrollTop + scroll;
+        }
+      }
     }
   }
 
@@ -77,16 +95,18 @@ export class TypeaheadComponent implements AfterViewInit {
     // get a list of our app-typeahead-option child elements
     this.options.changes
       .subscribe((queryList) => {
-        console.log('cool, new query list');
         this.selectedOptionIndex = -1;
         this.optionArray = queryList.toArray();
       });
   }
 
   setPosition({bottom, left, width}: { bottom: number; left: number; width: number }) {
-    console.log('heyyy what up we are setting styles on panel now');
     this.panel.nativeElement.style.top = `${bottom}px`;
     this.panel.nativeElement.style.left = `${left}px`;
     this.panel.nativeElement.style.width = `${width}px`;
+  }
+
+  scroll(scroll: number) {
+    this.panel.nativeElement.scrollTop = this.panel.nativeElement.scrollTop + scroll;
   }
 }

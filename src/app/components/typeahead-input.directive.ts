@@ -1,15 +1,16 @@
-import {
-  AfterViewInit, ChangeDetectorRef, Directive, ElementRef, forwardRef, HostBinding, HostListener,
-  Input
-} from '@angular/core';
+import { Directive, ElementRef, forwardRef, HostBinding, HostListener, Input } from '@angular/core';
 import { TypeaheadComponent } from './typeahead.component';
-import { DOWN_ARROW, ENTER, ESCAPE, UP_ARROW } from '../lib/keycodes';
+import { DOWN_ARROW, ENTER, ESCAPE, PAGE_DOWN, PAGE_UP, UP_ARROW } from '../lib/keycodes';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/merge';
 import 'rxjs/add/operator/switchMap';
+import 'rxjs/add/operator/startWith';
 import 'rxjs/add/operator/first';
 import { TypeaheadOptionComponent } from './typeahead-option.component';
-import { AbstractControl, ControlValueAccessor, NG_VALUE_ACCESSOR, ValidationErrors, Validator } from '@angular/forms';
+import {
+  AbstractControl, ControlValueAccessor, NG_VALIDATORS, NG_VALUE_ACCESSOR, ValidationErrors,
+  Validator
+} from '@angular/forms';
 
 @Directive({
   selector: 'input[appTypeahead]',
@@ -18,10 +19,15 @@ import { AbstractControl, ControlValueAccessor, NG_VALUE_ACCESSOR, ValidationErr
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => TypeaheadInputDirective),
       multi: true
+    },
+    {
+      provide: NG_VALIDATORS,
+      useExisting: forwardRef(() => TypeaheadInputDirective),
+      multi: true
     }
   ]
 })
-export class TypeaheadInputDirective implements AfterViewInit, ControlValueAccessor, Validator {
+export class TypeaheadInputDirective implements ControlValueAccessor, Validator {
   @HostBinding('attr.autocomplete') _a = 'off';
   /** View -> model callback called when value changes */
   _onChange: (value: any) => void = () => {
@@ -50,8 +56,9 @@ export class TypeaheadInputDirective implements AfterViewInit, ControlValueAcces
 
   @HostListener('input', ['$event'])
   private onInput() {
-    console.log('setting value from input');
+    this.typeahead.reset();
     this._onChange((event.target as HTMLInputElement).value);
+    this.openPanel();
   }
 
   @HostListener('keydown', ['$event']) onKeydown(event: KeyboardEvent): void {
@@ -60,36 +67,50 @@ export class TypeaheadInputDirective implements AfterViewInit, ControlValueAcces
     } else if (this.typeahead.showPanel && this.typeahead.selectedOption && event.keyCode === ENTER) {
       this.typeahead.selectedOption.select();
       event.preventDefault();
-    } else if (event.keyCode === DOWN_ARROW || event.keyCode === UP_ARROW) {
+    } else if (event.keyCode === DOWN_ARROW || event.keyCode === UP_ARROW || event.keyCode === PAGE_DOWN || event.keyCode === PAGE_UP) {
 
       this.openPanel();
+      let d;
       if (event.keyCode === DOWN_ARROW) {
-        this.typeahead.selectNext();
-      } else {
-        this.typeahead.selectPrev();
+        d = 1;
+      } else if (event.keyCode === UP_ARROW) {
+        d = -1;
+      } else if (event.keyCode === PAGE_DOWN) {
+        d = 10;
+      } else if (event.keyCode === PAGE_UP) {
+        d = -10;
       }
+      this.typeahead.selectNext(d);
       event.preventDefault();
+    }
+  }
 
+
+  @HostListener('window:scroll')
+  private onScroll() {
+    if (this.typeahead.showPanel) {
+      this.typeahead.setPosition(this.element.nativeElement.getBoundingClientRect());
     }
   }
 
   private openPanel() {
+    this.typeahead.setPosition(this.element.nativeElement.getBoundingClientRect());
     this.typeahead.showPanel = true;
 
     this.typeahead.options.changes
+      .startWith(this.typeahead.optionArray)
+      .filter((e) => !!e)
       .switchMap((optionList) => Observable.merge(...optionList.map((option) => option.onSelectionChange)))
       .first()
       .subscribe(
         (selectedElement: any) => {
-          console.log('selected element:', selectedElement);
+          console.log('hi, setting value and closing', selectedElement);
           this.setValueAndClose(selectedElement);
-        },
-        (err) => console.error('um wtf?', err)
+        }
       );
   }
 
   writeValue(value: string): void {
-    console.log('writeValue called');
     Promise.resolve(null).then(() => this.setTriggerValue(value));
   }
 
@@ -113,20 +134,16 @@ export class TypeaheadInputDirective implements AfterViewInit, ControlValueAcces
   }
 
   validate(c: AbstractControl): ValidationErrors | any {
+    console.log('am i valid?', !!this.typeahead.selectedOption);
     return this.typeahead.selectedOption ? null : {noneSelected: {valid: false}};
   }
 
   private setValueAndClose(selected: TypeaheadOptionComponent) {
-    const value = selected.value;
-    console.log('ok, setting the thing');
+    const value = selected ? selected.value : selected;
+    this.typeahead.selectedOption = selected;
     this._onChange(value);
     this.setTriggerValue(value);
     this.typeahead.showPanel = false;
 
-  }
-
-  ngAfterViewInit(): void {
-    const {bottom, left, width} = this.element.nativeElement.getBoundingClientRect();
-    this.typeahead.setPosition({bottom, left, width});
   }
 }

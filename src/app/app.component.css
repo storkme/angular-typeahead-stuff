@@ -3,3 +3,12 @@ input {
   margin: 20px;
   font-size: 2em;
 }
+
+.form-value {
+  background-color: darkred;
+  color: white;
+}
+
+.form-value.valid {
+  background-color: darkgreen;
+}

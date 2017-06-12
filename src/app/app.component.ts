@@ -7,8 +7,13 @@ import 'rxjs/add/operator/do';
 import 'rxjs/add/operator/first';
 import 'rxjs/add/operator/publishReplay';
 import 'rxjs/add/operator/startWith';
+import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/observable/combineLatest';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+
+const INITIAL_REPO = 'angular-typeahead-stuff';
+const INITIAL_OWNER = 'storkme';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -16,10 +21,10 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 })
 export class AppComponent implements OnInit {
   form: FormGroup;
-  formMd: FormGroup;
   options: Observable<GithubCommit[]>;
   filteredOptions: Observable<GithubCommit[]>;
-  filteredOptionsMd: Observable<GithubCommit[]>;
+  // formMd: FormGroup;
+  // filteredOptionsMd: Observable<GithubCommit[]>;
 
   constructor(private service: GithubApiService,
               private fb: FormBuilder) {
@@ -27,29 +32,36 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     this.form = this.fb.group({
-      commit: ['', Validators.required, lol]
+      commit: ['', Validators.required],
+      owner: [INITIAL_OWNER, Validators.required],
+      repo: [INITIAL_REPO, Validators.required],
     });
 
-    this.formMd = this.fb.group({
-      commit: ['', Validators.required, lol]
-    });
-
-    this.options = this.service.commits('storkme', 'lightshow-web')
-      .first()
-      .publishReplay()
-      .refCount();
-
-    this.filteredOptionsMd = Observable.combineLatest(
-      this.formMd.controls.commit.valueChanges.startWith(null),
-      this.options
+    this.options = Observable.combineLatest(
+      this.form.controls.owner.valueChanges
+        .startWith(INITIAL_OWNER),
+      this.form.controls.repo.valueChanges
+        .startWith(INITIAL_REPO)
     )
-      .map(([val, options]) => val ? this.filter(val, options) : options.slice());
+      .debounceTime(500)
+      .switchMap(([owner, repo]) => this.service.commits('storkme', 'lightshow-web'))
+      .share();
 
     this.filteredOptions = Observable.combineLatest(
       this.form.controls.commit.valueChanges.startWith(null),
       this.options
     )
       .map(([val, options]) => val ? this.filter(val, options) : options.slice());
+
+    // this.formMd = this.fb.group({
+    //   commit: ['', Validators.required]
+    // });
+
+    // this.filteredOptionsMd = Observable.combineLatest(
+    //   this.formMd.controls.commit.valueChanges.startWith(null),
+    //   this.options
+    // )
+    //   .map(([val, options]) => val ? this.filter(val, options) : options.slice());
   }
 
   onSubmit() {
@@ -57,7 +69,7 @@ export class AppComponent implements OnInit {
   }
 
   displayFn(o) {
-    return o && o.commit.message;
+    return o && o.message;
   }
 
   private filter(value: string, options) {
@@ -65,9 +77,4 @@ export class AppComponent implements OnInit {
       (option) => option.commit.message.includes(value)
     );
   }
-}
-
-function lol(f) {
-  console.log(f.value);
-  return Promise.resolve(typeof f.value === 'object' ? null : {nomatch: {valid: false}});
 }

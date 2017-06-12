@@ -1,2 +1,18 @@
 /* You can add global styles to this file, and also import other style files */
 @import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
+
+.app-typeahead-option.app-selected {
+  background-color: darkred !important;
+}
+
+.app-typeahead-option:hover {
+  background-color: orange !important;
+}
+
+pre {
+  font-family: 'Anonymous Pro', monospace;
+}
+
+html {
+  font-family: 'Overpass', sans-serif;
+}

@@ -1,10 +1,24 @@
-<pre>{{form.value | json}}
-valid: {{form.valid}}</pre>
-
-
 <form (ngSubmit)="onSubmit()"
       [formGroup]="form"
       novalidate>
+  <div class="form-group">
+    <div class="col-xs-4"><p>load from</p></div>
+    <div class="col-xs-4">
+      <div class="form-group">
+        <input type="text"
+          placeholder="owner"
+          formControlName="owner"
+          class="form-control">
+      </div>
+    </div>
+    <div class="col-xs-4"><div class="form-group">
+      <input type="text"
+             placeholder="owner"
+             formControlName="repo"
+             class="form-control">
+    </div></div>
+  </div>
+
   <div class="form-group">
     <input
            type="text"
@@ -15,29 +29,31 @@ valid: {{form.valid}}</pre>
            [displayWith]="displayFn">
 
     <app-typeahead #test>
-      <app-typeahead-option *ngFor="let commit of (filteredOptions | async)" [value]="commit">
+      <app-typeahead-option *ngFor="let commit of (filteredOptions | async)" [value]="commit.commit">
         {{commit.commit.message}}<br>
       </app-typeahead-option>
     </app-typeahead>
-
-
   </div>
 </form>
 
+<pre [class.valid]="form.valid" class="form-value">
+form is {{form.valid ? 'VALID' : 'INVALID!'}}
 
-<pre>{{formMd.value | json}}
-valid: {{formMd.valid}}</pre>
-<form (ngSubmit)="onSubmit()"
-      [formGroup]="formMd"
-      novalidate>
+{{form.value|json}}</pre>
 
-  <div class="form-group">
-    <input type="text" mdInput formControlName="commit" class="form-control" [mdAutocomplete]="auto">
-  </div>
 
-  <md-autocomplete #auto="mdAutocomplete" [displayWith]="displayFn">
-    <md-option *ngFor="let commit of (filteredOptionsMd | async)" [value]="commit">
-      {{ commit.commit.message}}
-    </md-option>
-  </md-autocomplete>
-</form>
+<!--<pre>{{formMd.value | json}}-->
+<!--valid: {{formMd.valid}}</pre>-->
+<!--<form (ngSubmit)="onSubmit()"-->
+      <!--[formGroup]="formMd"-->
+      <!--novalidate>-->
+
+  <!--<div class="form-group">-->
+    <!--<input type="text" mdInput formControlName="commit" class="form-control" [mdAutocomplete]="auto">-->
+  <!--</div>-->
+
+  <!--<md-autocomplete #auto="mdAutocomplete" [displayWith]="displayFn">-->
+    <!--<md-option *ngFor="let commit of (filteredOptionsMd | async)" [value]="commit.commit">-->
+    <!--</md-option>-->
+  <!--</md-autocomplete>-->
+<!--</form>-->
